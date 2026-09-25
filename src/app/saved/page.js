@@ -16,7 +16,7 @@ export default function SavedPage() {
     <main className="min-h-screen bg-[#08090b] px-4 py-8 text-white sm:px-6 lg:px-10">
       <div className="mx-auto max-w-6xl">
 
-        {/* HEADER */}
+        
         <div className="mb-8">
           <Link
             href="/"
@@ -52,7 +52,7 @@ export default function SavedPage() {
           </div>
         </div>
 
-        {/* STATS */}
+        
         <div className="mb-8 grid gap-3 sm:grid-cols-3">
 
           <div className="rounded-2xl border border-white/10 bg-white/[0.035] p-5 shadow-[0_20px_60px_rgba(0,0,0,0.25)] backdrop-blur-xl">
@@ -87,7 +87,7 @@ export default function SavedPage() {
 
         </div>
 
-        {/* SAVED LIST */}
+     
         {saved.length === 0 ? (
           <div className="rounded-3xl border border-white/10 bg-white/[0.035] px-6 py-20 text-center backdrop-blur-xl">
             <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-full border border-white/10 bg-white/[0.05] text-2xl">
@@ -118,12 +118,12 @@ export default function SavedPage() {
                 className="group relative overflow-hidden rounded-3xl border border-white/10 bg-white/[0.035] p-4 shadow-[0_20px_70px_rgba(0,0,0,0.25)] backdrop-blur-xl transition duration-300 hover:border-[#ccff00]/20 hover:bg-white/[0.055]"
               >
 
-                {/* GLASS GLOW */}
+             
                 <div className="pointer-events-none absolute -right-20 -top-20 h-40 w-40 rounded-full bg-[#ccff00]/5 blur-3xl transition group-hover:bg-[#ccff00]/10" />
 
                 <div className="relative flex flex-col gap-5 sm:flex-row sm:items-center">
 
-                  {/* IMAGE */}
+              
                   <div className="h-28 w-full shrink-0 overflow-hidden rounded-2xl border border-white/10 bg-black/30 sm:h-24 sm:w-36">
                     {workout.image ? (
                       <img
@@ -138,7 +138,7 @@ export default function SavedPage() {
                     )}
                   </div>
 
-                  {/* CONTENT */}
+               
                   <div className="min-w-0 flex-1">
 
                     <div className="mb-2 flex flex-wrap gap-2">
@@ -166,7 +166,7 @@ export default function SavedPage() {
                       {workout.equipment || "Workout"}
                     </p>
 
-                    {/* META */}
+                    
                     <div className="mt-4 flex flex-wrap gap-x-5 gap-y-2 text-xs text-white/50">
 
                       <span>
@@ -188,7 +188,7 @@ export default function SavedPage() {
                     </div>
                   </div>
 
-                  {/* BUTTON */}
+              
                   <div className="shrink-0">
                     <Link
                       href={`/workout/${workout.id}`}

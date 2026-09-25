@@ -13,9 +13,7 @@ export default function MyPlanPage() {
 
   const [sortBy, setSortBy] = useState("duration");
 
-  // --------------------------------
-  // SORT PLAN
-  // --------------------------------
+
   const sortedPlan = useMemo(() => {
     const items = [...plan];
 
@@ -46,9 +44,7 @@ export default function MyPlanPage() {
     return items;
   }, [plan, sortBy]);
 
-  // --------------------------------
-  // TOTAL MINUTES
-  // --------------------------------
+
   const totalMinutes = useMemo(() => {
     return plan.reduce(
       (total, workout) =>
@@ -57,9 +53,7 @@ export default function MyPlanPage() {
     );
   }, [plan]);
 
-  // --------------------------------
-  // TOTAL CALORIES
-  // --------------------------------
+ 
   const totalCalories = useMemo(() => {
     return plan.reduce(
       (total, workout) =>
@@ -69,16 +63,12 @@ export default function MyPlanPage() {
     );
   }, [plan]);
 
-  // --------------------------------
-  // MARK DONE
-  // --------------------------------
+ 
   const handleDone = (id) => {
     markAsDone(id);
   };
 
-  // --------------------------------
-  // REMOVE
-  // --------------------------------
+
   const handleRemove = (id) => {
     removeFromPlan(id);
   };
@@ -88,9 +78,7 @@ export default function MyPlanPage() {
 
       <div className="mx-auto max-w-7xl">
 
-        {/* =====================================
-            HEADER
-        ====================================== */}
+      
 
         <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
 
@@ -122,28 +110,25 @@ export default function MyPlanPage() {
         </div>
 
 
-        {/* =====================================
-            STATS
-        ====================================== */}
 
         <div className="mt-8 overflow-hidden rounded-2xl border border-white/10 bg-white/[0.025] backdrop-blur-xl">
 
           <div className="grid grid-cols-1 sm:grid-cols-3">
 
-            {/* EXERCISES */}
+          
             <Stat
               label="Exercises"
               value={plan.length}
               accent
             />
 
-            {/* MINUTES */}
+        
             <Stat
               label="Minutes"
               value={totalMinutes}
             />
 
-            {/* CALORIES */}
+        
             <Stat
               label="Calories"
               value={totalCalories}
@@ -155,13 +140,11 @@ export default function MyPlanPage() {
         </div>
 
 
-        {/* =====================================
-            CONTROLS
-        ====================================== */}
+
 
         <div className="mt-7 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
 
-          {/* TABS */}
+       
           <div className="inline-flex w-fit rounded-xl border border-white/10 bg-white/[0.03] p-1 backdrop-blur-xl">
 
             <button
@@ -183,7 +166,7 @@ export default function MyPlanPage() {
           </div>
 
 
-          {/* SORT */}
+   
           <div className="flex items-center gap-2">
 
             <span className="text-xs text-white/30">
@@ -224,9 +207,7 @@ export default function MyPlanPage() {
         </div>
 
 
-        {/* =====================================
-            EMPTY STATE
-        ====================================== */}
+
 
         {sortedPlan.length === 0 && (
 
@@ -257,9 +238,7 @@ export default function MyPlanPage() {
         )}
 
 
-        {/* =====================================
-            WORKOUT LIST
-        ====================================== */}
+
 
         <div className="mt-6 space-y-3">
 
@@ -283,9 +262,7 @@ export default function MyPlanPage() {
 }
 
 
-// ============================================
-// STAT COMPONENT
-// ============================================
+
 
 function Stat({
   label,
@@ -319,9 +296,7 @@ function Stat({
 }
 
 
-// ============================================
-// WORKOUT ROW
-// ============================================
+
 
 function WorkoutRow({
   workout,
@@ -352,19 +327,15 @@ function WorkoutRow({
 
     <div className="group relative overflow-hidden rounded-2xl border border-white/10 bg-white/[0.025] p-4 backdrop-blur-xl transition duration-300 hover:border-white/15 hover:bg-white/[0.04] sm:p-5">
 
-      {/* GLASS GLOW */}
       <div className="pointer-events-none absolute -right-20 -top-20 h-40 w-40 rounded-full bg-[#CCFF00]/[0.035] blur-3xl transition group-hover:bg-[#CCFF00]/[0.06]" />
 
 
       <div className="relative flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
 
-        {/* =================================
-            LEFT
-        ================================= */}
 
         <div className="flex min-w-0 items-center gap-4">
 
-          {/* IMAGE */}
+       
 
           <div className="h-20 w-28 shrink-0 overflow-hidden rounded-xl border border-white/10 bg-white/5">
 
@@ -377,7 +348,7 @@ function WorkoutRow({
           </div>
 
 
-          {/* INFO */}
+   
 
           <div className="min-w-0">
 
@@ -390,7 +361,7 @@ function WorkoutRow({
             </p>
 
 
-            {/* META */}
+          
 
             <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2 text-xs text-white/45">
 
@@ -424,13 +395,11 @@ function WorkoutRow({
         </div>
 
 
-        {/* =================================
-            ACTIONS
-        ================================= */}
+   
 
         <div className="flex shrink-0 items-center gap-2">
 
-          {/* VIEW DETAILS */}
+   
 
           <Link
             href={`/workout/${workout?.id}`}
@@ -440,7 +409,7 @@ function WorkoutRow({
           </Link>
 
 
-          {/* MARK DONE */}
+   
 
           <button
             onClick={() =>
@@ -452,7 +421,7 @@ function WorkoutRow({
           </button>
 
 
-          {/* REMOVE */}
+     
 
           <button
             onClick={() =>

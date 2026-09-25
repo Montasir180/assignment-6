@@ -83,7 +83,7 @@ export const FitLogProvider = ({ children }) => {
   const addToPlan = (workout) => {
     if (!workout?.id) return;
 
-    // Don't allow if already saved
+
     const alreadySaved = saved.some(
       (item) =>
         String(item?.id) ===
@@ -96,7 +96,6 @@ export const FitLogProvider = ({ children }) => {
 
     setPlan((currentPlan) => {
 
-      // Don't allow duplicate plan item
       const alreadyInPlan =
         currentPlan.some(
           (item) =>
@@ -108,7 +107,7 @@ export const FitLogProvider = ({ children }) => {
         return currentPlan;
       }
 
-      // Maximum 5 workouts
+ 
       if (currentPlan.length >= 5) {
         return currentPlan;
       }
@@ -150,7 +149,7 @@ export const FitLogProvider = ({ children }) => {
   const saveWorkout = (workout) => {
     if (!workout?.id) return;
 
-    // Don't allow if already in today's plan
+   
     const alreadyInPlan = plan.some(
       (item) =>
         String(item?.id) ===
@@ -163,7 +162,7 @@ export const FitLogProvider = ({ children }) => {
 
     setSaved((currentSaved) => {
 
-      // Don't allow duplicate saved item
+   
       const alreadySaved =
         currentSaved.some(
           (item) =>

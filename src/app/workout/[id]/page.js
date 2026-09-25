@@ -83,10 +83,10 @@ const WorkoutDetails = async ({ params }) => {
   return (
     <main className="min-h-screen bg-[#0b0d10] text-white">
 
-      {/* MAIN CONTAINER */}
+  
       <div className="mx-auto max-w-[1400px] px-5 py-8 sm:px-8 lg:px-10">
 
-        {/* BACK BUTTON */}
+       
         <Link
           href="/"
           className="mb-7 inline-flex items-center gap-2 text-[11px] font-bold uppercase tracking-wide text-white/35 transition hover:text-[#c8ff00]"
@@ -95,14 +95,14 @@ const WorkoutDetails = async ({ params }) => {
         </Link>
 
 
-        {/* CONTENT */}
+   
         <div className="grid gap-7 lg:grid-cols-[minmax(0,1.05fr)_minmax(400px,0.95fr)]">
 
 
-          {/* ================= IMAGE ================= */}
+
           <div className="group relative overflow-hidden rounded-xl border border-white/[0.08] bg-[#111419]">
 
-            {/* glow */}
+     
             <div className="pointer-events-none absolute left-1/2 top-1/2 h-64 w-64 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#c8ff00]/10 blur-[100px]" />
 
             <div className="relative flex min-h-[420px] items-center justify-center sm:min-h-[500px] lg:min-h-[560px]">
@@ -118,10 +118,10 @@ const WorkoutDetails = async ({ params }) => {
           </div>
 
 
-          {/* ================= DETAILS ================= */}
+        
           <div className="flex flex-col justify-center">
 
-            {/* CATEGORY */}
+        
             <div className="mb-4 flex flex-wrap gap-2">
               {categories.map((item, index) => (
                 <span
@@ -134,19 +134,18 @@ const WorkoutDetails = async ({ params }) => {
             </div>
 
 
-            {/* TITLE */}
+           
             <h1 className="max-w-2xl text-4xl font-black uppercase leading-[0.9] tracking-tight sm:text-5xl">
               {workout.name}
             </h1>
 
 
-            {/* DESCRIPTION */}
+           
             <p className="mt-4 max-w-2xl text-xs leading-5 text-white/45 sm:text-sm">
               {workout.description}
             </p>
 
 
-            {/* DATA CARD */}
             <div className="mt-7 overflow-hidden rounded-xl border border-white/[0.08] bg-[#111419]/80 shadow-2xl shadow-black/20 backdrop-blur-xl">
 
               <InfoRow
@@ -199,7 +198,6 @@ const WorkoutDetails = async ({ params }) => {
             </div>
 
 
-            {/* INSTRUCTIONS */}
             {instructions.length > 0 && (
               <div className="mt-7">
 
@@ -232,7 +230,7 @@ const WorkoutDetails = async ({ params }) => {
             )}
 
 
-            {/* ACTION BUTTONS */}
+        
             <div className="mt-7">
               <WorkoutActions workout={workout} />
             </div>
@@ -244,7 +242,7 @@ const WorkoutDetails = async ({ params }) => {
       </div>
 
 
-      {/* ================= FOOTER ================= */}
+     
       <footer className="mt-8 border-t border-white/[0.06]">
 
         <div className="mx-auto flex max-w-[1400px] flex-col items-start justify-between gap-3 px-5 py-5 sm:flex-row sm:items-center sm:px-8 lg:px-10">
