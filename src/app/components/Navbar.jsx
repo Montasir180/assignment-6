@@ -1,25 +1,34 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useFitLog } from "@/app/context/FitLogContext";
 
 const Navbar = () => {
+  const pathname = usePathname();
+
   const { plan, saved } = useFitLog();
 
-  return (
-    <nav className="sticky top-0 z-50 border-b border-white/10 bg-[#11151a]/95 backdrop-blur-xl">
-      <div className="navbar mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+  const planCount = plan?.length || 0;
+  const savedCount = saved?.length || 0;
 
-        {/* LEFT */}
+  const isActive = (path) => pathname === path;
+
+  return (
+    <header className="sticky top-0 z-50 border-b border-white/[0.07] bg-[#08090b]/90 backdrop-blur-xl">
+
+      <div className="navbar mx-auto min-h-[72px] max-w-7xl px-4 sm:px-6 lg:px-8">
+
+        {/* ================= LEFT ================= */}
         <div className="navbar-start">
 
-          {/* Mobile menu */}
-          <div className="dropdown lg:hidden">
+          {/* MOBILE MENU */}
+          <div className="dropdown">
 
-            <button
+            <div
               tabIndex={0}
-              className="btn btn-ghost btn-circle"
-              aria-label="Open menu"
+              role="button"
+              className="btn btn-ghost btn-circle mr-2 lg:hidden"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -32,94 +41,156 @@ const Navbar = () => {
                   strokeLinecap="round"
                   strokeLinejoin="round"
                   strokeWidth="2"
-                  d="M4 6h16M4 12h8m-8 6h16"
+                  d="M4 6h16M4 12h16M4 18h16"
                 />
               </svg>
-            </button>
+            </div>
 
             <ul
               tabIndex={0}
-              className="menu dropdown-content z-50 mt-3 w-52 rounded-2xl border border-white/10 bg-[#11151a] p-3 shadow-2xl"
+              className="menu dropdown-content z-[1] mt-4 w-56 rounded-2xl border border-white/10 bg-[#111419] p-3 shadow-2xl"
             >
+
               <li>
-                <Link href="/">
+                <Link
+                  href="/"
+                  className={isActive("/") ? "text-[#ccff00]" : ""}
+                >
                   Workouts
                 </Link>
               </li>
 
               <li>
-                <Link href="/my-plan">
+                <Link
+                  href="/my-plan"
+                  className={
+                    isActive("/my-plan")
+                      ? "text-[#ccff00]"
+                      : ""
+                  }
+                >
                   My Plan
+
+                  {planCount > 0 && (
+                    <span className="badge badge-sm border-[#ccff00]/20 bg-[#ccff00]/10 text-[#ccff00]">
+                      {planCount}
+                    </span>
+                  )}
                 </Link>
               </li>
+
+              <li>
+                <Link href="/saved">
+                  Saved
+
+                  {savedCount > 0 && (
+                    <span className="badge badge-sm border-[#ccff00]/20 bg-[#ccff00]/10 text-[#ccff00]">
+                      {savedCount}
+                    </span>
+                  )}
+                </Link>
+              </li>
+
             </ul>
+
           </div>
 
-          {/* Logo */}
+
+          {/* LOGO */}
           <Link
             href="/"
-            className="flex items-center gap-2"
+            className="group flex items-center gap-2"
           >
+
             <img
               src="/Image/logo.png"
               alt="FitLog Logo"
-              className="h-10 w-10 object-contain"
+              className="h-10 w-10 object-contain transition duration-300 group-hover:scale-105"
             />
 
-            <span className="hidden text-xl font-black tracking-tight text-white sm:block">
-              FITLOG
-            </span>
+            <div className="hidden sm:block">
+              <h1 className="text-lg font-black tracking-tight">
+                FIT<span className="text-[#ccff00]">LOG</span>
+              </h1>
+
+              <p className="text-[7px] font-bold uppercase tracking-[0.2em] text-white/25">
+                Train. Log. Repeat.
+              </p>
+            </div>
+
           </Link>
+
         </div>
 
-        {/* CENTER */}
+
+        {/* ================= CENTER ================= */}
         <div className="navbar-center hidden lg:flex">
-          <ul className="menu menu-horizontal items-center gap-2">
 
-            <li>
-              <Link
-                href="/"
-                className="font-semibold text-white/70 hover:text-[#CCFF00]"
-              >
-                Workouts
-              </Link>
-            </li>
+          <nav className="flex items-center gap-2">
 
-            <li>
-              <Link
-                href="/my-plan"
-                className="font-semibold text-white/70 hover:text-[#CCFF00]"
-              >
-                My Plan
-              </Link>
-            </li>
+            <NavLink
+              href="/"
+              active={isActive("/")}
+            >
+              Workouts
+            </NavLink>
 
-          </ul>
+            <NavLink
+              href="/my-plan"
+              active={isActive("/my-plan")}
+            >
+              My Plan
+            </NavLink>
+
+          </nav>
+
         </div>
 
-        {/* RIGHT */}
+
+        {/* ================= RIGHT ================= */}
         <div className="navbar-end">
 
-          <div className="flex items-center gap-1 sm:gap-2">
+          <div className="hidden items-center gap-2 sm:flex">
 
+            {/* PLAN */}
             <Link
               href="/my-plan"
-              className="rounded-full px-3 py-2 text-xs font-bold text-white/70 hover:bg-white/5 hover:text-[#CCFF00] sm:px-4 sm:text-sm"
+              className={`group flex items-center gap-2 rounded-full border px-3 py-2 transition ${
+                isActive("/my-plan")
+                  ? "border-[#ccff00]/30 bg-[#ccff00]/10"
+                  : "border-white/10 bg-white/[0.025] hover:border-[#ccff00]/20"
+              }`}
             >
-              Plan{" "}
-              <span className="rounded-full bg-[#CCFF00] px-2 py-1 text-[10px] font-black text-black">
-                {plan.length}
+
+              <span className="text-[9px] font-black uppercase tracking-wide text-white/35">
+                Plan
               </span>
+
+              <span className="flex h-5 min-w-5 items-center justify-center rounded-full bg-[#ccff00] px-1.5 text-[9px] font-black text-black">
+                {planCount}
+              </span>
+
             </Link>
 
+
+            {/* SAVED */}
             <Link
-              href="/my-plan"
-              className="rounded-full px-3 py-2 text-xs font-bold text-white/70 hover:bg-white/5 hover:text-[#CCFF00] sm:px-4 sm:text-sm"
+              href="/saved"
+              className={`group flex items-center gap-2 rounded-full border px-3 py-2 transition ${
+                isActive("/saved")
+                  ? "border-[#ccff00]/30 bg-[#ccff00]/10"
+                  : "border-white/10 bg-white/[0.025] hover:border-[#ccff00]/20"
+              }`}
             >
-              Saved{" "}
-              <span className="rounded-full bg-white/10 px-2 py-1 text-[10px] font-black text-white">
-                {saved.length}
+
+              <span className="text-[9px] font-black uppercase tracking-wide text-white/35">
+                Saved
               </span>
+
+              <span className="flex h-5 min-w-5 items-center justify-center rounded-full bg-white/10 px-1.5 text-[9px] font-black text-white/70">
+                {savedCount}
+              </span>
+
             </Link>
 
           </div>
@@ -127,7 +198,26 @@ const Navbar = () => {
         </div>
 
       </div>
-    </nav>
+
+    </header>
+  );
+};
+
+
+/* ================= NAV LINK ================= */
+
+const NavLink = ({ href, active, children }) => {
+  return (
+    <Link
+      href={href}
+      className={`relative rounded-full px-5 py-2.5 text-xs font-black uppercase tracking-wide transition ${
+        active
+          ? "bg-[#ccff00] text-black"
+          : "text-white/45 hover:bg-white/[0.05] hover:text-white"
+      }`}
+    >
+      {children}
+    </Link>
   );
 };
 

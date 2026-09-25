@@ -1,20 +1,30 @@
 "use client";
 
-import { createContext, useContext, useEffect, useState } from "react";
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 
 const FitLogContext = createContext(null);
 
 export const FitLogProvider = ({ children }) => {
+
   const [plan, setPlan] = useState([]);
   const [saved, setSaved] = useState([]);
 
-  const [mounted, setMounted] = useState(false);
+  // =========================================
+  // LOAD FROM LOCAL STORAGE
+  // =========================================
 
-  // Load data from localStorage
   useEffect(() => {
     try {
-      const storedPlan = localStorage.getItem("fitlog-plan");
-      const storedSaved = localStorage.getItem("fitlog-saved");
+      const storedPlan =
+        localStorage.getItem("fitlog-plan");
+
+      const storedSaved =
+        localStorage.getItem("fitlog-saved");
 
       if (storedPlan) {
         setPlan(JSON.parse(storedPlan));
@@ -24,100 +34,139 @@ export const FitLogProvider = ({ children }) => {
         setSaved(JSON.parse(storedSaved));
       }
     } catch (error) {
-      console.error("Failed to load FitLog data:", error);
+      console.error(
+        "FitLog storage error:",
+        error
+      );
     }
-
-    setMounted(true);
   }, []);
 
-  // Save plan
+
+  // =========================================
+  // SAVE PLAN
+  // =========================================
+
   useEffect(() => {
-    if (!mounted) return;
+    localStorage.setItem(
+      "fitlog-plan",
+      JSON.stringify(plan)
+    );
+  }, [plan]);
 
-    localStorage.setItem("fitlog-plan", JSON.stringify(plan));
-  }, [plan, mounted]);
 
-  // Save saved workouts
+  // =========================================
+  // SAVE SAVED WORKOUTS
+  // =========================================
+
   useEffect(() => {
-    if (!mounted) return;
+    localStorage.setItem(
+      "fitlog-saved",
+      JSON.stringify(saved)
+    );
+  }, [saved]);
 
-    localStorage.setItem("fitlog-saved", JSON.stringify(saved));
-  }, [saved, mounted]);
 
-  // =========================
+  // =========================================
   // ADD TO PLAN
-  // =========================
+  // =========================================
 
   const addToPlan = (workout) => {
-    if (!workout?.id) return false;
 
-    const alreadyExists = plan.some(
-      (item) => item?.id === workout.id
-    );
+    if (!workout?.id) return;
 
-    if (alreadyExists) {
-      return false;
-    }
+    setPlan((current) => {
 
-    if (plan.length >= 5) {
-      return false;
-    }
+      // Already exists
+      if (
+        current.some(
+          (item) =>
+            item?.id === workout.id
+        )
+      ) {
+        return current;
+      }
 
-    setPlan((previous) => [...previous, workout]);
+      // Maximum 5
+      if (current.length >= 5) {
+        return current;
+      }
 
-    return true;
+      return [
+        ...current,
+        workout,
+      ];
+    });
   };
 
-  // =========================
+
+  // =========================================
   // REMOVE FROM PLAN
-  // =========================
+  // =========================================
 
   const removeFromPlan = (id) => {
-    setPlan((previous) =>
-      previous.filter((item) => item?.id !== id)
+
+    setPlan((current) =>
+      current.filter(
+        (item) =>
+          item?.id !== id
+      )
     );
   };
 
-  // =========================
+
+  // =========================================
   // SAVE WORKOUT
-  // =========================
+  // =========================================
 
   const saveWorkout = (workout) => {
-    if (!workout?.id) return false;
 
-    const alreadySaved = saved.some(
-      (item) => item?.id === workout.id
-    );
+    if (!workout?.id) return;
 
-    if (alreadySaved) {
-      return false;
-    }
+    setSaved((current) => {
 
-    setSaved((previous) => [...previous, workout]);
+      if (
+        current.some(
+          (item) =>
+            item?.id === workout.id
+        )
+      ) {
+        return current;
+      }
 
-    return true;
+      return [
+        ...current,
+        workout,
+      ];
+    });
   };
 
-  // =========================
+
+  // =========================================
   // REMOVE SAVED
-  // =========================
+  // =========================================
 
-  const removeSaved = (id) => {
-    setSaved((previous) =>
-      previous.filter((item) => item?.id !== id)
+  const removeSavedWorkout = (id) => {
+
+    setSaved((current) =>
+      current.filter(
+        (item) =>
+          item?.id !== id
+      )
     );
   };
+
 
   return (
     <FitLogContext.Provider
       value={{
         plan,
         saved,
-        mounted,
+
         addToPlan,
         removeFromPlan,
+
         saveWorkout,
-        removeSaved,
+        removeSavedWorkout,
       }}
     >
       {children}
@@ -125,8 +174,15 @@ export const FitLogProvider = ({ children }) => {
   );
 };
 
+
+// =========================================
+// HOOK
+// =========================================
+
 export const useFitLog = () => {
-  const context = useContext(FitLogContext);
+
+  const context =
+    useContext(FitLogContext);
 
   if (!context) {
     throw new Error(
