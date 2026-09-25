@@ -1,228 +1,101 @@
 "use client";
 
-import {
-  createContext,
-  useContext,
-  useEffect,
-  useState,
-} from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 
 const FitLogContext = createContext(null);
-
-const PLAN_KEY = "fitlog-plan";
-const SAVED_KEY = "fitlog-saved";
 
 export const FitLogProvider = ({ children }) => {
   const [plan, setPlan] = useState([]);
   const [saved, setSaved] = useState([]);
 
-  const [mounted, setMounted] = useState(false);
-
 
 
   useEffect(() => {
     try {
-      const storedPlan =
-        localStorage.getItem(PLAN_KEY);
-
-      const storedSaved =
-        localStorage.getItem(SAVED_KEY);
+      const storedPlan = localStorage.getItem("fitlog-plan");
+      const storedSaved = localStorage.getItem("fitlog-saved");
 
       if (storedPlan) {
-        const parsedPlan =
-          JSON.parse(storedPlan);
-
-        if (Array.isArray(parsedPlan)) {
-          setPlan(parsedPlan);
-        }
+        setPlan(JSON.parse(storedPlan));
       }
 
       if (storedSaved) {
-        const parsedSaved =
-          JSON.parse(storedSaved);
-
-        if (Array.isArray(parsedSaved)) {
-          setSaved(parsedSaved);
-        }
+        setSaved(JSON.parse(storedSaved));
       }
     } catch (error) {
-      console.error(
-        "FitLog localStorage error:",
-        error
-      );
+      console.error("Failed to load FitLog data:", error);
     }
-
-    setMounted(true);
   }, []);
 
 
-  
-  useEffect(() => {
-    if (!mounted) return;
-
-    localStorage.setItem(
-      PLAN_KEY,
-      JSON.stringify(plan)
-    );
-  }, [plan, mounted]);
-
-
 
   useEffect(() => {
-    if (!mounted) return;
+    localStorage.setItem("fitlog-plan", JSON.stringify(plan));
+  }, [plan]);
 
-    localStorage.setItem(
-      SAVED_KEY,
-      JSON.stringify(saved)
-    );
-  }, [saved, mounted]);
+  useEffect(() => {
+    localStorage.setItem("fitlog-saved", JSON.stringify(saved));
+  }, [saved]);
 
 
-  
 
   const addToPlan = (workout) => {
     if (!workout?.id) return;
 
-
-    const alreadySaved = saved.some(
-      (item) =>
-        String(item?.id) ===
-        String(workout.id)
-    );
-
-    if (alreadySaved) {
-      return;
-    }
-
     setPlan((currentPlan) => {
+      const exists = currentPlan.some(
+        (item) => item?.id === workout.id
+      );
 
-      const alreadyInPlan =
-        currentPlan.some(
-          (item) =>
-            String(item?.id) ===
-            String(workout.id)
-        );
-
-      if (alreadyInPlan) {
+      if (exists) {
         return currentPlan;
       }
 
- 
-      if (currentPlan.length >= 5) {
-        return currentPlan;
-      }
-
-      return [
-        ...currentPlan,
-        workout,
-      ];
+      return [...currentPlan, workout];
     });
   };
 
-  const removeFromPlan = (workoutId) => {
-    if (!workoutId) return;
 
+
+  const removeFromPlan = (id) => {
     setPlan((currentPlan) =>
-      currentPlan.filter(
-        (item) =>
-          String(item?.id) !==
-          String(workoutId)
-      )
+      currentPlan.filter((item) => item?.id !== id)
     );
   };
 
 
 
-  const markAsDone = (workoutId) => {
-    if (!workoutId) return;
-
+  const markAsDone = (id) => {
     setPlan((currentPlan) =>
-      currentPlan.filter(
-        (item) =>
-          String(item?.id) !==
-          String(workoutId)
-      )
+      currentPlan.filter((item) => item?.id !== id)
     );
   };
+
 
 
   const saveWorkout = (workout) => {
     if (!workout?.id) return;
 
-   
-    const alreadyInPlan = plan.some(
-      (item) =>
-        String(item?.id) ===
-        String(workout.id)
-    );
-
-    if (alreadyInPlan) {
-      return;
-    }
-
     setSaved((currentSaved) => {
+      const exists = currentSaved.some(
+        (item) => item?.id === workout.id
+      );
 
-   
-      const alreadySaved =
-        currentSaved.some(
-          (item) =>
-            String(item?.id) ===
-            String(workout.id)
-        );
-
-      if (alreadySaved) {
+      if (exists) {
         return currentSaved;
       }
 
-      return [
-        ...currentSaved,
-        workout,
-      ];
+      return [...currentSaved, workout];
     });
   };
 
 
 
-
-  const removeSavedWorkout = (workoutId) => {
-    if (!workoutId) return;
-
+  const removeSavedWorkout = (id) => {
     setSaved((currentSaved) =>
-      currentSaved.filter(
-        (item) =>
-          String(item?.id) !==
-          String(workoutId)
-      )
+      currentSaved.filter((item) => item?.id !== id)
     );
   };
-
-
-
-
-  const isInPlan = (workoutId) => {
-    if (!workoutId) return false;
-
-    return plan.some(
-      (item) =>
-        String(item?.id) ===
-        String(workoutId)
-    );
-  };
-
-
-  
-
-  const isSaved = (workoutId) => {
-    if (!workoutId) return false;
-
-    return saved.some(
-      (item) =>
-        String(item?.id) ===
-        String(workoutId)
-    );
-  };
-
-
 
   return (
     <FitLogContext.Provider
@@ -236,9 +109,6 @@ export const FitLogProvider = ({ children }) => {
 
         saveWorkout,
         removeSavedWorkout,
-
-        isInPlan,
-        isSaved,
       }}
     >
       {children}
@@ -246,11 +116,8 @@ export const FitLogProvider = ({ children }) => {
   );
 };
 
-
-
 export const useFitLog = () => {
-  const context =
-    useContext(FitLogContext);
+  const context = useContext(FitLogContext);
 
   if (!context) {
     throw new Error(
