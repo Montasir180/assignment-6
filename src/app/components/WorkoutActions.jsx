@@ -1,7 +1,6 @@
 "use client";
 
 import { useFitLog } from "@/app/context/FitLogContext";
-import { useState } from "react";
 
 const WorkoutActions = ({ workout }) => {
   const {
@@ -11,111 +10,113 @@ const WorkoutActions = ({ workout }) => {
     saveWorkout,
   } = useFitLog();
 
-  const [toast, setToast] = useState("");
+  if (!workout?.id) {
+    return null;
+  }
 
-  if (!workout) return null;
-
+  // Check if this workout is already in today's plan
   const isInPlan = plan.some(
-    (item) => item?.id === workout.id
+    (item) =>
+      String(item?.id) === String(workout.id)
   );
 
+  // Check if this workout is already saved
   const isSaved = saved.some(
-    (item) => item?.id === workout.id
+    (item) =>
+      String(item?.id) === String(workout.id)
   );
 
-  const showToast = (message) => {
-    setToast(message);
-
-    setTimeout(() => {
-      setToast("");
-    }, 2500);
-  };
+  // --------------------------------
+  // ADD TO PLAN
+  // --------------------------------
 
   const handleAddToPlan = () => {
-    if (!workout?.id) return;
-
-    if (isInPlan) return;
+    // Already in plan or already saved
+    if (isInPlan || isSaved) {
+      return;
+    }
 
     addToPlan(workout);
-
-    showToast("Added to today's plan");
   };
 
-  const handleSave = () => {
-    if (!workout?.id) return;
+  // --------------------------------
+  // SAVE FOR LATER
+  // --------------------------------
 
-    if (isSaved) return;
+  const handleSave = () => {
+    // Already saved or already in plan
+    if (isSaved || isInPlan) {
+      return;
+    }
 
     saveWorkout(workout);
-
-    showToast("Saved for later");
   };
 
   return (
-    <>
-      <div className="mt-8 grid gap-3 sm:grid-cols-2">
+    <div className="mt-8 grid gap-3 sm:grid-cols-2">
 
-        {/* ADD TO PLAN */}
-        <button
-          onClick={handleAddToPlan}
-          disabled={isInPlan}
-          className={`flex items-center justify-center gap-2 rounded-xl px-6 py-4 text-xs font-black uppercase transition ${
+      {/* =====================================
+          ADD TO TODAY'S PLAN
+      ====================================== */}
+
+      <button
+        type="button"
+        onClick={handleAddToPlan}
+        disabled={isInPlan || isSaved}
+        className={`
+          flex items-center justify-center
+          rounded-xl px-6 py-4
+          text-sm font-black uppercase
+          transition-all duration-200
+
+          ${
             isInPlan
-              ? "cursor-not-allowed bg-white/10 text-white/30"
-              : "bg-[#ccff00] text-black hover:bg-[#ddff4d]"
-          }`}
-        >
-          <span>
-            {isInPlan ? "✓" : "+"}
-          </span>
+              ? "cursor-not-allowed bg-[#CCFF00]/20 text-[#CCFF00]/50"
+              : isSaved
+              ? "cursor-not-allowed bg-white/[0.04] text-white/20"
+              : "bg-[#CCFF00] text-black hover:bg-[#d9ff3f] active:scale-[0.98]"
+          }
+        `}
+      >
+        {isInPlan
+          ? "✓ Added To Today's Plan"
+          : isSaved
+          ? "Saved — Add Disabled"
+          : "+ Add To Today's Plan"}
+      </button>
 
-          {isInPlan
-            ? "Added To Today's Plan"
-            : "Add To Today's Plan"}
-        </button>
 
+      {/* =====================================
+          SAVE FOR LATER
+      ====================================== */}
 
-        {/* SAVE */}
-        <button
-          onClick={handleSave}
-          disabled={isSaved}
-          className={`flex items-center justify-center gap-2 rounded-xl border px-6 py-4 text-xs font-black uppercase transition ${
+      <button
+        type="button"
+        onClick={handleSave}
+        disabled={isSaved || isInPlan}
+        className={`
+          flex items-center justify-center
+          rounded-xl border px-6 py-4
+          text-sm font-black uppercase
+          transition-all duration-200
+
+          ${
             isSaved
-              ? "cursor-not-allowed border-white/10 bg-white/10 text-white/30"
-              : "border-white/10 bg-white/[0.03] text-white hover:border-[#ccff00]/40 hover:text-[#ccff00]"
-          }`}
-        >
-          <span>
-            {isSaved ? "♥" : "♡"}
-          </span>
+              ? "cursor-not-allowed border-[#CCFF00]/20 bg-[#CCFF00]/10 text-[#CCFF00]/60"
+              : isInPlan
+              ? "cursor-not-allowed border-white/10 bg-white/[0.03] text-white/20"
+              : "border-white/10 bg-white/[0.03] text-white hover:border-[#CCFF00]/40 hover:text-[#CCFF00] active:scale-[0.98]"
+          }
+        `}
+      >
+        {isSaved
+          ? "♡ Saved For Later"
+          : isInPlan
+          ? "In Today's Plan"
+          : "♡ Save For Later"}
+      </button>
 
-          {isSaved
-            ? "Saved"
-            : "Save For Later"}
-        </button>
-
-      </div>
-
-
-      {/* TOAST */}
-      {toast && (
-        <div className="fixed bottom-6 left-1/2 z-[100] -translate-x-1/2">
-
-          <div className="flex items-center gap-3 rounded-full border border-[#ccff00]/20 bg-[#111419]/95 px-5 py-3 shadow-2xl shadow-black/40 backdrop-blur-xl">
-
-            <span className="flex h-6 w-6 items-center justify-center rounded-full bg-[#ccff00] text-xs font-black text-black">
-              ✓
-            </span>
-
-            <span className="text-xs font-bold text-white">
-              {toast}
-            </span>
-
-          </div>
-
-        </div>
-      )}
-    </>
+    </div>
   );
 };
 
