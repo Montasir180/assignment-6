@@ -23,7 +23,6 @@ const WorkoutCard = ({ workout }) => {
         "
       >
 
-        {/* Image */}
         <div className="relative h-52 overflow-hidden">
           <img
             src={workout.image}
@@ -38,15 +37,14 @@ const WorkoutCard = ({ workout }) => {
             "
           />
 
-          {/* Image overlay */}
+      
           <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
         </div>
 
 
-        {/* Content */}
+       
         <div className="p-5">
 
-          {/* Badges */}
           <div className="mb-4 flex items-center gap-2">
             <span className="badge badge-sm border-none bg-lime-400 font-bold text-black">
               {workout.category || "BACK"}
@@ -58,40 +56,39 @@ const WorkoutCard = ({ workout }) => {
           </div>
 
 
-          {/* Title */}
+     
           <h2 className="text-xl font-black uppercase tracking-wide text-white">
             {workout.name}
           </h2>
 
 
-          {/* Equipment */}
           <p className="mt-1 text-sm text-gray-400">
             {workout.equipment || "Pull-up Bar"}
           </p>
 
 
-          {/* Divider */}
+  
           <div className="my-4 h-px bg-white/10" />
 
 
-          {/* Stats */}
+   
           <div className="flex flex-wrap items-center gap-4 text-sm text-gray-400">
 
-            {/* Time */}
+            
             <div className="flex items-center gap-1.5">
               <span>◷</span>
               <span>{workout.duration || "15 min"}</span>
             </div>
 
 
-            {/* Calories */}
+        
             <div className="flex items-center gap-1.5">
               <span>♟</span>
               <span>{workout.calories || "120 kcal"}</span>
             </div>
 
 
-            {/* Rating */}
+   
             <div className="flex items-center gap-1.5">
               <span>☆</span>
               <span>{workout.rating || "4.7"}</span>

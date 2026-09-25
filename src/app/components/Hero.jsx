@@ -6,7 +6,6 @@ const Hero = () => {
 
       <div className="mx-auto grid min-h-[600px] max-w-7xl items-center gap-10 px-5 py-16 sm:px-8 lg:grid-cols-2 lg:px-10">
 
-        {/* LEFT */}
         <div className="relative z-10">
 
           <p className="mb-4 text-sm font-bold uppercase tracking-[0.25em] text-[#CCFF00]">
@@ -35,7 +34,6 @@ const Hero = () => {
         </div>
 
 
-        {/* RIGHT IMAGE */}
         <div className="relative flex min-h-[400px] items-center justify-center">
 
           <div className="absolute h-72 w-72 rounded-full bg-[#CCFF00]/10 blur-3xl" />

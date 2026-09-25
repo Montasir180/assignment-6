@@ -23,7 +23,7 @@ const Library = () => {
 
         const result = await response.json();
 
-        // Handle different possible API response shapes
+       
         const data =
           Array.isArray(result)
             ? result
@@ -52,7 +52,7 @@ const Library = () => {
     >
       <div className="mx-auto max-w-7xl">
 
-        {/* HEADER */}
+        
         <div className="mb-10 flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
 
           <div>
@@ -73,7 +73,7 @@ const Library = () => {
         </div>
 
 
-        {/* LOADING */}
+        
         {loading && (
           <div className="flex min-h-60 items-center justify-center">
             <span className="loading loading-spinner loading-lg text-[#CCFF00]" />
@@ -81,7 +81,7 @@ const Library = () => {
         )}
 
 
-        {/* ERROR */}
+       
         {!loading && error && (
           <div className="rounded-2xl border border-red-500/20 bg-red-500/5 p-6 text-center text-red-400">
             {error}
@@ -89,7 +89,6 @@ const Library = () => {
         )}
 
 
-        {/* EMPTY */}
         {!loading && !error && workouts.length === 0 && (
           <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-10 text-center text-white/40">
             No workouts found.
@@ -97,7 +96,7 @@ const Library = () => {
         )}
 
 
-        {/* CARDS */}
+       
         {!loading && !error && workouts.length > 0 && (
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {workouts.map((workout) => (

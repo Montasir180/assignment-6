@@ -14,24 +14,21 @@ const WorkoutActions = ({ workout }) => {
     return null;
   }
 
-  // Check if this workout is already in today's plan
+
   const isInPlan = plan.some(
     (item) =>
       String(item?.id) === String(workout.id)
   );
 
-  // Check if this workout is already saved
   const isSaved = saved.some(
     (item) =>
       String(item?.id) === String(workout.id)
   );
 
-  // --------------------------------
-  // ADD TO PLAN
-  // --------------------------------
+  
 
   const handleAddToPlan = () => {
-    // Already in plan or already saved
+  
     if (isInPlan || isSaved) {
       return;
     }
@@ -39,12 +36,9 @@ const WorkoutActions = ({ workout }) => {
     addToPlan(workout);
   };
 
-  // --------------------------------
-  // SAVE FOR LATER
-  // --------------------------------
+ 
 
   const handleSave = () => {
-    // Already saved or already in plan
     if (isSaved || isInPlan) {
       return;
     }
@@ -55,9 +49,7 @@ const WorkoutActions = ({ workout }) => {
   return (
     <div className="mt-8 grid gap-3 sm:grid-cols-2">
 
-      {/* =====================================
-          ADD TO TODAY'S PLAN
-      ====================================== */}
+     
 
       <button
         type="button"
@@ -86,9 +78,7 @@ const WorkoutActions = ({ workout }) => {
       </button>
 
 
-      {/* =====================================
-          SAVE FOR LATER
-      ====================================== */}
+   
 
       <button
         type="button"

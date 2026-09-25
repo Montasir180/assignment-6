@@ -19,10 +19,10 @@ const Navbar = () => {
 
       <div className="navbar mx-auto min-h-[72px] max-w-7xl px-4 sm:px-6 lg:px-8">
 
-        {/* ================= LEFT ================= */}
+        
         <div className="navbar-start">
 
-          {/* MOBILE MENU */}
+          
           <div className="dropdown">
 
             <div
@@ -96,7 +96,6 @@ const Navbar = () => {
           </div>
 
 
-          {/* LOGO */}
           <Link
             href="/"
             className="group flex items-center gap-2"
@@ -123,7 +122,6 @@ const Navbar = () => {
         </div>
 
 
-        {/* ================= CENTER ================= */}
         <div className="navbar-center hidden lg:flex">
 
           <nav className="flex items-center gap-2">
@@ -147,7 +145,6 @@ const Navbar = () => {
         </div>
 
 
-        {/* ================= RIGHT ================= */}
         <div className="navbar-end">
 
           <div className="hidden items-center gap-2 sm:flex">
@@ -173,7 +170,6 @@ const Navbar = () => {
             </Link>
 
 
-            {/* SAVED */}
             <Link
               href="/saved"
               className={`group flex items-center gap-2 rounded-full border px-3 py-2 transition ${
@@ -204,7 +200,7 @@ const Navbar = () => {
 };
 
 
-/* ================= NAV LINK ================= */
+
 
 const NavLink = ({ href, active, children }) => {
   return (

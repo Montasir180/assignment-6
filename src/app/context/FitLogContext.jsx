@@ -19,9 +19,6 @@ export const FitLogProvider = ({ children }) => {
   const [mounted, setMounted] = useState(false);
 
 
-  // ==========================================
-  // LOAD DATA
-  // ==========================================
 
   useEffect(() => {
     try {
@@ -59,10 +56,7 @@ export const FitLogProvider = ({ children }) => {
   }, []);
 
 
-  // ==========================================
-  // SAVE PLAN
-  // ==========================================
-
+  
   useEffect(() => {
     if (!mounted) return;
 
@@ -73,9 +67,6 @@ export const FitLogProvider = ({ children }) => {
   }, [plan, mounted]);
 
 
-  // ==========================================
-  // SAVE SAVED WORKOUTS
-  // ==========================================
 
   useEffect(() => {
     if (!mounted) return;
@@ -87,9 +78,7 @@ export const FitLogProvider = ({ children }) => {
   }, [saved, mounted]);
 
 
-  // ==========================================
-  // ADD TO PLAN
-  // ==========================================
+  
 
   const addToPlan = (workout) => {
     if (!workout?.id) return;
@@ -131,11 +120,6 @@ export const FitLogProvider = ({ children }) => {
     });
   };
 
-
-  // ==========================================
-  // REMOVE FROM PLAN
-  // ==========================================
-
   const removeFromPlan = (workoutId) => {
     if (!workoutId) return;
 
@@ -149,9 +133,6 @@ export const FitLogProvider = ({ children }) => {
   };
 
 
-  // ==========================================
-  // MARK AS DONE
-  // ==========================================
 
   const markAsDone = (workoutId) => {
     if (!workoutId) return;
@@ -165,10 +146,6 @@ export const FitLogProvider = ({ children }) => {
     );
   };
 
-
-  // ==========================================
-  // SAVE WORKOUT
-  // ==========================================
 
   const saveWorkout = (workout) => {
     if (!workout?.id) return;
@@ -206,9 +183,7 @@ export const FitLogProvider = ({ children }) => {
   };
 
 
-  // ==========================================
-  // REMOVE SAVED WORKOUT
-  // ==========================================
+
 
   const removeSavedWorkout = (workoutId) => {
     if (!workoutId) return;
@@ -223,9 +198,7 @@ export const FitLogProvider = ({ children }) => {
   };
 
 
-  // ==========================================
-  // CHECK PLAN
-  // ==========================================
+
 
   const isInPlan = (workoutId) => {
     if (!workoutId) return false;
@@ -238,9 +211,7 @@ export const FitLogProvider = ({ children }) => {
   };
 
 
-  // ==========================================
-  // CHECK SAVED
-  // ==========================================
+  
 
   const isSaved = (workoutId) => {
     if (!workoutId) return false;
@@ -253,9 +224,6 @@ export const FitLogProvider = ({ children }) => {
   };
 
 
-  // ==========================================
-  // PROVIDER
-  // ==========================================
 
   return (
     <FitLogContext.Provider
@@ -280,9 +248,6 @@ export const FitLogProvider = ({ children }) => {
 };
 
 
-// ==========================================
-// CUSTOM HOOK
-// ==========================================
 
 export const useFitLog = () => {
   const context =
