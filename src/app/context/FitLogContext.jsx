@@ -1,16 +1,21 @@
 "use client";
 
-import { createContext, useContext, useEffect, useState } from "react";
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 
-const FitLogContext = createContext();
+const FitLogContext = createContext(null);
 
 export const FitLogProvider = ({ children }) => {
   const [plan, setPlan] = useState([]);
   const [saved, setSaved] = useState([]);
-
   const [toast, setToast] = useState(null);
+  const [hydrated, setHydrated] = useState(false);
 
-
+ 
   useEffect(() => {
     try {
       const storedPlan = localStorage.getItem("fitlog-plan");
@@ -24,18 +29,32 @@ export const FitLogProvider = ({ children }) => {
         setSaved(JSON.parse(storedSaved));
       }
     } catch (error) {
-      console.error("Local storage error:", error);
+      console.error("Local storage loading error:", error);
     }
+
+    setHydrated(true);
   }, []);
 
- 
-  useEffect(() => {
-    localStorage.setItem("fitlog-plan", JSON.stringify(plan));
-  }, [plan]);
 
   useEffect(() => {
-    localStorage.setItem("fitlog-saved", JSON.stringify(saved));
-  }, [saved]);
+    if (!hydrated) return;
+
+    localStorage.setItem(
+      "fitlog-plan",
+      JSON.stringify(plan)
+    );
+  }, [plan, hydrated]);
+
+
+  useEffect(() => {
+    if (!hydrated) return;
+
+    localStorage.setItem(
+      "fitlog-saved",
+      JSON.stringify(saved)
+    );
+  }, [saved, hydrated]);
+
 
   const showToast = (message, type = "success") => {
     setToast({
@@ -53,24 +72,39 @@ export const FitLogProvider = ({ children }) => {
   const addToPlan = (workout) => {
     if (!workout?.id) return;
 
-    const alreadyExists = plan.some(
+    const alreadyInPlan = plan.some(
       (item) => item?.id === workout.id
     );
 
-    if (alreadyExists) {
-      showToast("Workout is already in today's plan", "info");
+    const alreadySaved = saved.some(
+      (item) => item?.id === workout.id
+    );
+
+
+    if (alreadyInPlan) {
+      showToast(
+        `${workout.name} is already in today's plan.`,
+        "info"
+      );
       return;
     }
 
-    if (plan.length >= 5) {
-      showToast("Today's plan is limited to 5 workouts", "error");
+
+    if (alreadySaved) {
+      showToast(
+        `${workout.name} is already saved. Remove it from Saved first.`,
+        "error"
+      );
       return;
     }
 
-    setPlan((prev) => [...prev, workout]);
+    setPlan((previous) => [
+      ...previous,
+      workout,
+    ]);
 
     showToast(
-      `${workout.name || "Workout"} added to today's plan`,
+      `${workout.name} added to today's plan.`,
       "success"
     );
   };
@@ -81,14 +115,18 @@ export const FitLogProvider = ({ children }) => {
       (item) => item?.id === id
     );
 
-    setPlan((prev) =>
-      prev.filter((item) => item?.id !== id)
+    setPlan((previous) =>
+      previous.filter(
+        (item) => item?.id !== id
+      )
     );
 
-    showToast(
-      `${workout?.name || "Workout"} removed from today's plan`,
-      "delete"
-    );
+    if (workout) {
+      showToast(
+        `${workout.name} removed from today's plan.`,
+        "success"
+      );
+    }
   };
 
 
@@ -97,14 +135,18 @@ export const FitLogProvider = ({ children }) => {
       (item) => item?.id === id
     );
 
-    setPlan((prev) =>
-      prev.filter((item) => item?.id !== id)
+    setPlan((previous) =>
+      previous.filter(
+        (item) => item?.id !== id
+      )
     );
 
-    showToast(
-      `${workout?.name || "Workout"} completed!`,
-      "success"
-    );
+    if (workout) {
+      showToast(
+        `${workout.name} completed!`,
+        "success"
+      );
+    }
   };
 
 
@@ -115,33 +157,57 @@ export const FitLogProvider = ({ children }) => {
       (item) => item?.id === workout.id
     );
 
+    const alreadyInPlan = plan.some(
+      (item) => item?.id === workout.id
+    );
+
+   
     if (alreadySaved) {
-      showToast("Workout is already saved", "info");
+      showToast(
+        `${workout.name} is already saved.`,
+        "info"
+      );
       return;
     }
 
-    setSaved((prev) => [...prev, workout]);
+
+    if (alreadyInPlan) {
+      showToast(
+        `${workout.name} is already in today's plan. Remove it first.`,
+        "error"
+      );
+      return;
+    }
+
+    setSaved((previous) => [
+      ...previous,
+      workout,
+    ]);
 
     showToast(
-      `${workout.name || "Workout"} saved for later`,
-      "save"
+      `${workout.name} saved for later.`,
+      "success"
     );
   };
 
-
+  
   const removeFromSaved = (id) => {
     const workout = saved.find(
       (item) => item?.id === id
     );
 
-    setSaved((prev) =>
-      prev.filter((item) => item?.id !== id)
+    setSaved((previous) =>
+      previous.filter(
+        (item) => item?.id !== id
+      )
     );
 
-    showToast(
-      `${workout?.name || "Workout"} removed from saved`,
-      "delete"
-    );
+    if (workout) {
+      showToast(
+        `${workout.name} removed from saved.`,
+        "success"
+      );
+    }
   };
 
   return (
@@ -152,16 +218,55 @@ export const FitLogProvider = ({ children }) => {
 
         addToPlan,
         removeFromPlan,
-        markAsDone,
 
         saveWorkout,
         removeFromSaved,
 
-        toast,
+        markAsDone,
+
         showToast,
       }}
     >
       {children}
+
+     
+      {toast && (
+        <div className="fixed bottom-6 right-6 z-[9999]">
+          <div
+            className={`min-w-[280px] max-w-[380px] rounded-xl border px-5 py-4 shadow-2xl backdrop-blur-xl ${
+              toast.type === "error"
+                ? "border-red-500/30 bg-red-500/10"
+                : toast.type === "info"
+                ? "border-white/10 bg-white/10"
+                : "border-[#CCFF00]/30 bg-[#CCFF00]/10"
+            }`}
+          >
+            <div className="flex items-start gap-3">
+
+              <div
+                className={`mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-xs font-black ${
+                  toast.type === "error"
+                    ? "bg-red-500 text-white"
+                    : toast.type === "info"
+                    ? "bg-white/20 text-white"
+                    : "bg-[#CCFF00] text-black"
+                }`}
+              >
+                {toast.type === "error"
+                  ? "!"
+                  : toast.type === "info"
+                  ? "i"
+                  : "✓"}
+              </div>
+
+              <p className="text-sm font-medium leading-6 text-white">
+                {toast.message}
+              </p>
+
+            </div>
+          </div>
+        </div>
+      )}
     </FitLogContext.Provider>
   );
 };

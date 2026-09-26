@@ -202,7 +202,6 @@ const MyPlanPage = () => {
 
             </div>
 
-\
             <div className="p-6 sm:p-7">
 
               <p className="text-[10px] font-bold uppercase tracking-wider text-white/30">
@@ -214,9 +213,6 @@ const MyPlanPage = () => {
               </p>
 
             </div>
-
-
-           \
             <div className="p-6 sm:p-7">
 
               <p className="text-[10px] font-bold uppercase tracking-wider text-white/30">
