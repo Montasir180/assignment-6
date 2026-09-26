@@ -2,12 +2,13 @@
 
 import { createContext, useContext, useEffect, useState } from "react";
 
-const FitLogContext = createContext(null);
+const FitLogContext = createContext();
 
 export const FitLogProvider = ({ children }) => {
   const [plan, setPlan] = useState([]);
   const [saved, setSaved] = useState([]);
 
+  const [toast, setToast] = useState(null);
 
 
   useEffect(() => {
@@ -23,12 +24,11 @@ export const FitLogProvider = ({ children }) => {
         setSaved(JSON.parse(storedSaved));
       }
     } catch (error) {
-      console.error("Failed to load FitLog data:", error);
+      console.error("Local storage error:", error);
     }
   }, []);
 
-
-
+ 
   useEffect(() => {
     localStorage.setItem("fitlog-plan", JSON.stringify(plan));
   }, [plan]);
@@ -37,63 +37,110 @@ export const FitLogProvider = ({ children }) => {
     localStorage.setItem("fitlog-saved", JSON.stringify(saved));
   }, [saved]);
 
+  const showToast = (message, type = "success") => {
+    setToast({
+      id: Date.now(),
+      message,
+      type,
+    });
+
+    setTimeout(() => {
+      setToast(null);
+    }, 2500);
+  };
 
 
   const addToPlan = (workout) => {
     if (!workout?.id) return;
 
-    setPlan((currentPlan) => {
-      const exists = currentPlan.some(
-        (item) => item?.id === workout.id
-      );
+    const alreadyExists = plan.some(
+      (item) => item?.id === workout.id
+    );
 
-      if (exists) {
-        return currentPlan;
-      }
+    if (alreadyExists) {
+      showToast("Workout is already in today's plan", "info");
+      return;
+    }
 
-      return [...currentPlan, workout];
-    });
+    if (plan.length >= 5) {
+      showToast("Today's plan is limited to 5 workouts", "error");
+      return;
+    }
+
+    setPlan((prev) => [...prev, workout]);
+
+    showToast(
+      `${workout.name || "Workout"} added to today's plan`,
+      "success"
+    );
   };
-
 
 
   const removeFromPlan = (id) => {
-    setPlan((currentPlan) =>
-      currentPlan.filter((item) => item?.id !== id)
+    const workout = plan.find(
+      (item) => item?.id === id
+    );
+
+    setPlan((prev) =>
+      prev.filter((item) => item?.id !== id)
+    );
+
+    showToast(
+      `${workout?.name || "Workout"} removed from today's plan`,
+      "delete"
     );
   };
-
 
 
   const markAsDone = (id) => {
-    setPlan((currentPlan) =>
-      currentPlan.filter((item) => item?.id !== id)
+    const workout = plan.find(
+      (item) => item?.id === id
+    );
+
+    setPlan((prev) =>
+      prev.filter((item) => item?.id !== id)
+    );
+
+    showToast(
+      `${workout?.name || "Workout"} completed!`,
+      "success"
     );
   };
-
 
 
   const saveWorkout = (workout) => {
     if (!workout?.id) return;
 
-    setSaved((currentSaved) => {
-      const exists = currentSaved.some(
-        (item) => item?.id === workout.id
-      );
+    const alreadySaved = saved.some(
+      (item) => item?.id === workout.id
+    );
 
-      if (exists) {
-        return currentSaved;
-      }
+    if (alreadySaved) {
+      showToast("Workout is already saved", "info");
+      return;
+    }
 
-      return [...currentSaved, workout];
-    });
+    setSaved((prev) => [...prev, workout]);
+
+    showToast(
+      `${workout.name || "Workout"} saved for later`,
+      "save"
+    );
   };
 
 
+  const removeFromSaved = (id) => {
+    const workout = saved.find(
+      (item) => item?.id === id
+    );
 
-  const removeSavedWorkout = (id) => {
-    setSaved((currentSaved) =>
-      currentSaved.filter((item) => item?.id !== id)
+    setSaved((prev) =>
+      prev.filter((item) => item?.id !== id)
+    );
+
+    showToast(
+      `${workout?.name || "Workout"} removed from saved`,
+      "delete"
     );
   };
 
@@ -108,7 +155,10 @@ export const FitLogProvider = ({ children }) => {
         markAsDone,
 
         saveWorkout,
-        removeSavedWorkout,
+        removeFromSaved,
+
+        toast,
+        showToast,
       }}
     >
       {children}
